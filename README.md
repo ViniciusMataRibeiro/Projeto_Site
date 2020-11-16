@@ -9,6 +9,10 @@ Tópicos abordados:
 * Tópico 3 – __Gerar arquivo do tipo *.txt__
 * Tópico 4 - __Excluir__ (Em implementação)
 
+### Desafio 19
+<img src="./_imagens/desafio19.PNG" width="873" height="451"/>
+Desafio retirado do livro Fundamentos da programação de computadores 3ª edição.</br>
+
 Código implementado por: </br>
 * Vinicius
 * [Gustavo da Silva](https://github.com/Ch0kitus)
@@ -18,9 +22,6 @@ Código implementado por: </br>
 
 ## Fundamentos da PROGRAMAÇÃO de COMPUTADORES 3ª edição
 <img src="./_imagens/livro.jpg" width="400" height="400"/>
-
-### Desafio 19
-<img src="./_imagens/desafio19.PNG" width="873" height="451"/>
 
 #### Programas utilizados
 * [DEV C++](https://sourceforge.net/projects/orwelldevcpp/)
