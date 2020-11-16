@@ -20,7 +20,7 @@ Código implementado por: </br>
 <img src="./_imagens/livro.jpg" width="300" height="350"/>
 
 ### Desafio 19
-<img src="./_imagens/desafio19.png" width="400" height="400"/>
+<img src="./_imagens/desafio19.PNG" width="400" height="400"/>
 
 #### Programas utilizados
 * [DEV C++](https://sourceforge.net/projects/orwelldevcpp/)
