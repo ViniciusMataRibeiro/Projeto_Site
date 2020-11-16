@@ -11,17 +11,14 @@ Tópicos abordados:
 
 ### Desafio 19
 <img src="./_imagens/desafio19.PNG" width="873" height="451"/>
-Desafio retirado do livro Fundamentos da programação de computadores 3ª edição.</br>
+Desafio retirado do livro Fundamentos da programação de computadores 3ª edição.</br></br>
 
-Código implementado por: </br>
+Código implementado por:
 * Vinicius
 * [Gustavo da Silva](https://github.com/Ch0kitus)
 * Andressa
 * Gabriel
 * [João Paulo Freitas](https://github.com/jpfreitasalvi)
-
-## Fundamentos da PROGRAMAÇÃO de COMPUTADORES 3ª edição
-<img src="./_imagens/livro.jpg" width="400" height="400"/>
 
 #### Programas utilizados
 * [DEV C++](https://sourceforge.net/projects/orwelldevcpp/)
