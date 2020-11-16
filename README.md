@@ -17,10 +17,10 @@ Código implementado por: </br>
 * [João Paulo Freitas](https://github.com/jpfreitasalvi)
 
 ## Fundamentos da PROGRAMAÇÃO de COMPUTADORES 3ª edição
-<img src="./_imagens/livro.jpg" width="873" height="451"/>
+<img src="./_imagens/livro.jpg" width="400" height="400"/>
 
 ### Desafio 19
-<img src="./_imagens/desafio19.PNG" width="800" height="800"/>
+<img src="./_imagens/desafio19.PNG" width="873" height="451"/>
 
 #### Programas utilizados
 * [DEV C++](https://sourceforge.net/projects/orwelldevcpp/)
