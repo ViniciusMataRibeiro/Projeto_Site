@@ -11,7 +11,7 @@ Tópicos abordados:
 
 Código implementado por: </br>
 * Vinicius
-* Gustavo
+* [Gustavo da Silva](https://github.com/Ch0kitus)
 * Andressa
 * Gabriel
 * [João Paulo Freitas](https://github.com/jpfreitasalvi)
