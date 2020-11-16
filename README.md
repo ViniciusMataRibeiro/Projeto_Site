@@ -17,7 +17,7 @@ Código implementado por: </br>
 * [João Paulo Freitas](https://github.com/jpfreitasalvi)
 
 ## Fundamentos da PROGRAMAÇÃO de COMPUTADORES 3ª edição
-<img src="./_imagens/livro.jpg" width="300" height="350"/>
+<img src="./_imagens/livro.jpg" width="873" height="451"/>
 
 ### Desafio 19
 <img src="./_imagens/desafio19.PNG" width="800" height="800"/>
