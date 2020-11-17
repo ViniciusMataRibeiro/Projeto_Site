@@ -209,6 +209,7 @@ void GerarTxt(FILE *dad, FILE *con){// funcao que gera o arquivo txt
 }
 
 void AlteracaoPaciente(FILE *arq){  // funcao de alteracao dos pacientes
+	FILE *arq_aux = fopen("aux.dat","ab+");
 	int i, tam_arq;
 	char cod[TAM], confirma;
 	SPaciente p;
@@ -220,11 +221,12 @@ void AlteracaoPaciente(FILE *arq){  // funcao de alteracao dos pacientes
             printf("Codigo inexistente.\n");
         }
 	}while(!CodigoInvalido(arq, cod));
+	arq = fopen("dados.dat","wb"); // apaga o arquivo anterior e cria um novo arquivo
 	for(i=0;i<tam_arq;i++){
 		fseek(arq, i * sizeof(SPaciente), SEEK_SET);
 		fread(&p, sizeof(SPaciente),1,arq);
-		if(!strcmp(cod,p.cod)){
-			arq = fopen("dados.dat","wb"); // apaga o arquivo anterior e cria um novo arquivo
+		printf("%s\n",p.cod);
+		if(strcmp(cod, p.cod) == 0){
 			printf("Nome do paciente: ");
 			scanf("%s",&p.nome);
 			printf("Convenvio.......: ");
@@ -232,15 +234,19 @@ void AlteracaoPaciente(FILE *arq){  // funcao de alteracao dos pacientes
 			printf("Telefone fixo...: ");
 			scanf("%s",&p.telefone);
 			printf("Celular.........: ");
-			scanf("%s",&p.celular);
-			fwrite(&p, sizeof(SPaciente),1,arq);
-			printf("Confirma <S/N>: ");
+			scanf("%s",&p.celular);			
+			printf("\nConfirma <S/N>: ");
 			scanf(" %c",&confirma);
-			if(tolower(confirma) == 's'){				
+			if(tolower(confirma) == 's'){
+				fwrite(&p, sizeof(SPaciente),1,arq);
 				printf("\nAlteracao concluida.\n\n");
 				system("pause");							
 			}
+		}else{
+			fseek(arq, i * sizeof(SPaciente), SEEK_SET);
+			fwrite(&p, sizeof(SPaciente),1,arq);
 		}		
 	}
 	fclose(arq);
+	fclose(arq_aux);
 }
