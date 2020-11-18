@@ -17,7 +17,7 @@ Código implementado por:
 * [Vinicius](https://github.com/ViniciusMataRibeiro)
 * [Gustavo da Silva](https://github.com/Ch0kitus)
 * Andressa
-* Gabriel
+* [Gabriel](https://github.com/Gabriel-SRibeiro)
 * [João Paulo Freitas](https://github.com/jpfreitasalvi)
 
 #### Programas utilizados
