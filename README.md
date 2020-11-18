@@ -14,7 +14,7 @@ Tópicos abordados:
 Desafio retirado do livro Fundamentos da programação de computadores 3ª edição.</br></br>
 
 Código implementado por:
-* Vinicius
+* [Vinicius](https://github.com/ViniciusMataRibeiro)
 * [Gustavo da Silva](https://github.com/Ch0kitus)
 * Andressa
 * Gabriel
