@@ -7,13 +7,13 @@
 
 typedef char string[TAM];
 
-struct SData{
-	int dia, mes, ano;
-};
-
-struct SHora{
-	int hora, minutos;
-};
+typedef struct{
+	string cod;
+	string nome;
+	string convenio;
+	string telefone;
+	string celular;	
+}Elemento;
 
 struct SPaciente{
 	string cod;
@@ -23,12 +23,48 @@ struct SPaciente{
 	string celular;
 };
 
+struct SData{
+	int dia, mes, ano;
+};
+
+struct SHora{
+	int hora, minutos;
+};
+
 struct SConsulta{
 	SData data_consulta;
 	SHora hora_consulta;
 	char codigo[TAM];
 	char tipo_consulta[TAM];
 };
+
+typedef struct{
+	SPaciente vetor[TAM];
+	int fim;
+}Lista;
+
+void IniciaLista(Lista *l){
+	l->fim = 0;
+}
+
+void InserirItem(Lista *l, Elemento e){
+	if(l->fim<TAM){
+		int i = l->fim;
+		while(i>0 and strcmp(e.nome, l->vetor[i-1].nome) < 0){
+			strcpy(l->vetor[i].nome, l->vetor[i-1].nome);
+			strcpy(l->vetor[i].cod, l->vetor[i-1].cod);
+			strcpy(l->vetor[i].telefone, l->vetor[i-1].telefone);
+			strcpy(l->vetor[i].celular, l->vetor[i-1].celular);
+			strcpy(l->vetor[i].convenio, l->vetor[i-1].convenio);
+			i--;
+		}
+		strcpy(l->vetor[i].celular, e.celular);
+		strcpy(l->vetor[i].cod, e.cod);
+		strcpy(l->vetor[i].convenio, e.convenio);
+		strcpy(l->vetor[i].telefone, e.telefone);		
+		l->fim++;
+	}	
+}
 
 int Tamanho(FILE *arq, int estrutura){ // funcao para verificar quantos pacientes estao cadastrados
 	fseek(arq, 0, SEEK_END);
@@ -73,7 +109,7 @@ int DataeHorarioInvalido(FILE *arq, SConsulta c){ // funcao que valida a DATA e 
 					}					
 				}
 			}else{
-				printf("Consultas so podem ser marcadas entre 07 e 19:55\n");
+				printf("Consultas so podem ser marcadas entre 7:00 e 20:00\n");
 				return 1;
 			}								
 		}else{
@@ -87,21 +123,22 @@ void Cadastrar(FILE *arq){  // funcao de cadastro de pacientes
 	arq = fopen("dados.dat","ab+");
 	SPaciente paciente;
 	char confirma;
+	fflush(stdin);
 	do{
 		printf("Codigo do paciente: ");
-		scanf("%s",&paciente.cod);
+		gets(paciente.cod);
 		if(CodigoInvalido(arq, paciente.cod)){
 			printf("O codigo inserido ja existe.\n");
 		}
 	}while(CodigoInvalido(arq, paciente.cod));
 	printf("Nome do Paciente..: ");
-	scanf("%s",&paciente.nome);
+	gets(paciente.nome);
 	printf("Nome do convenio..: ");
-	scanf("%s",&paciente.convenio);
+	gets(paciente.convenio);
     printf("Telefone Fixo.....: ");
-	scanf("%s",&paciente.telefone);
+	gets(paciente.telefone);
     printf("Celular...........: ");
-	scanf("%s",&paciente.celular);
+	gets(paciente.celular);
 	fflush(stdin);
 	printf("\nConfirma <S/N>: ");
 	scanf(" %c", &confirma);
@@ -118,9 +155,10 @@ void AgendamentoConsulta(FILE *arq, FILE *con){  // funcao de agedamento de cons
 	con = fopen("agenda.dat","ab+");
 	SConsulta agendamento;
 	char confirma;
+	fflush(stdin);
 	do{ // validacao codigo paciente
         printf("Informe o codigo do paciente: ");
-        scanf("%s",&agendamento.codigo);
+        gets(agendamento.codigo);
         if(!CodigoInvalido(arq,agendamento.codigo)){
             printf("Codigo inexistente.\n");
         }
@@ -131,8 +169,9 @@ void AgendamentoConsulta(FILE *arq, FILE *con){  // funcao de agedamento de cons
 		printf("Horario da consulta: ");
 		scanf("%d %*c %d",&agendamento.hora_consulta.hora, &agendamento.hora_consulta.minutos);
 	}while(DataeHorarioInvalido(con, agendamento));
+	fflush(stdin);
 	printf("Tipo da Consulta[Retorno ou Consulta]: ");
-	scanf("%s",&agendamento.tipo_consulta);
+	gets(agendamento.tipo_consulta);
 	fflush(stdin);
 	printf("\nConfirma<S/N>: ");
 	scanf(" %c",&confirma);
@@ -173,9 +212,12 @@ void MostrarConsultas(FILE *arq, FILE *con){  // funcao que exibe os horarios da
 }
 
 void GerarTxt(FILE *dad, FILE *con){// funcao que gera o arquivo txt
+	Lista lst;
+	IniciaLista(&lst);
 	FILE *arquivo_txt;
 	int i, tam_arq;
 	char nome_arq[20];
+	Elemento e;
 	SPaciente p;
 	SConsulta c;
 	tam_arq = Tamanho(dad, sizeof(SPaciente));
@@ -186,7 +228,20 @@ void GerarTxt(FILE *dad, FILE *con){// funcao que gera o arquivo txt
 	if(!arquivo_txt){
 		printf("Falha ao criar o arquivo.\n");
 		exit(1);
-	}	
+	}
+	for(i=0;i<tam_arq;i++){ // ordenacao
+		fseek(dad, i * sizeof(SPaciente), SEEK_SET);
+		fread(&p,sizeof(SPaciente),1,dad);
+		strcpy(e.nome, p.nome);
+		strcpy(e.celular, p.celular);
+		strcpy(e.cod, p.cod);
+		strcpy(e.convenio, p.convenio);
+		strcpy(e.telefone, p.telefone);
+		InserirItem(&lst, e);				
+	}
+//	for(i=0;i<tam_arq;i++){
+//		printf("%s\n%s\n%s\n%s\n%s\n",lst.vetor[i].nome,lst.vetor[i].cod,lst.vetor[i].telefone,lst.vetor[i].celular,lst.vetor[i].convenio);
+//	}
 	for(i=0;i<tam_arq;i++){
 		fseek(dad, i * sizeof(SPaciente), SEEK_SET);
 		fread(&p, sizeof(SPaciente), 1, dad);
@@ -208,45 +263,61 @@ void GerarTxt(FILE *dad, FILE *con){// funcao que gera o arquivo txt
 	system("pause");	
 }
 
-void AlteracaoPaciente(FILE *arq){  // funcao de alteracao dos pacientes
-	FILE *arq_aux = fopen("aux.dat","ab+");
-	int i, tam_arq;
-	char cod[TAM], confirma;
-	SPaciente p;
-	tam_arq = Tamanho(arq, sizeof(SPaciente));
-	do{
-        printf("Informe o codigo do paciente: ");
-        scanf("%s",&cod);
-        if(!CodigoInvalido(arq,cod)){
-            printf("Codigo inexistente.\n");
-        }
-	}while(!CodigoInvalido(arq, cod));
-	arq = fopen("dados.dat","wb"); // apaga o arquivo anterior e cria um novo arquivo
-	for(i=0;i<tam_arq;i++){
-		fseek(arq, i * sizeof(SPaciente), SEEK_SET);
-		fread(&p, sizeof(SPaciente),1,arq);
-		printf("%s\n",p.cod);
-		if(strcmp(cod, p.cod) == 0){
-			printf("Nome do paciente: ");
-			scanf("%s",&p.nome);
-			printf("Convenvio.......: ");
-			scanf("%s",&p.convenio);
-			printf("Telefone fixo...: ");
-			scanf("%s",&p.telefone);
-			printf("Celular.........: ");
-			scanf("%s",&p.celular);			
-			printf("\nConfirma <S/N>: ");
-			scanf(" %c",&confirma);
-			if(tolower(confirma) == 's'){
-				fwrite(&p, sizeof(SPaciente),1,arq);
-				printf("\nAlteracao concluida.\n\n");
-				system("pause");							
-			}
-		}else{
-			fseek(arq, i * sizeof(SPaciente), SEEK_SET);
-			fwrite(&p, sizeof(SPaciente),1,arq);
-		}		
-	}
-	fclose(arq);
-	fclose(arq_aux);
-}
+//void AlteracaoPaciente(FILE *arq){  // funcao de alteracao dos pacientes
+//	FILE *arq_aux = fopen("aux.dat","ab+");
+//	int i, tam_arq;
+//	char cod[TAM], confirma;
+//	SPaciente p;
+//	tam_arq = Tamanho(arq, sizeof(SPaciente));
+//	fflush(stdin);
+//	do{
+//        printf("Informe o codigo do paciente: ");
+//        gets(cod);
+//        if(!CodigoInvalido(arq,cod)){
+//            printf("Codigo inexistente.\n");
+//        }
+//	}while(!CodigoInvalido(arq, cod));
+//	arq = fopen("dados.dat","wb"); // apaga o arquivo anterior e cria um novo arquivo
+//	for(i=0;i<tam_arq;i++){
+//		fseek(arq, i * sizeof(SPaciente), SEEK_SET);
+//		fread(&p, sizeof(SPaciente),1,arq);
+//		if(strcmp(cod,p.cod) == 0){
+//			arq = fopen("dados.dat","wb"); // apaga o arquivo anterior e cria um novo arquivo
+//		printf("%s\n",p.cod);
+//		if(strcmp(cod, p.cod) == 0){
+//			printf("Nome do paciente: ");
+//			gets(p.nome);
+//			printf("Convenvio.......: ");
+//			gets(p.convenio);
+//			printf("Telefone fixo...: ");
+//			gets(p.telefone);
+//			printf("Celular.........: ");
+//			gets(p.celular);
+//			fwrite(&p, sizeof(SPaciente),1,arq);
+//			fflush(stdin);
+//			printf("Confirma <S/N>: ");
+//			scanf(" %c",&confirma);
+//			if(tolower(confirma) == 's'){				
+//				printf("\nAlteracao concluida.\n\n");	
+//				fwrite(&p, sizeof(SPaciente),1,arq);
+//				system("pause");						
+//			}else{
+//				fwrite(&p, sizeof(SPaciente),1,arq);
+//				scanf("%s",&p.celular);			
+//				printf("\nConfirma <S/N>: ");
+//				scanf(" %c",&confirma);
+//			}
+//			if(tolower(confirma) == 's'){
+//				fwrite(&p, sizeof(SPaciente),1,arq);
+//				printf("\nAlteracao concluida.\n\n");
+//				system("pause");							
+//			}
+//		}else{
+//			fseek(arq, i * sizeof(SPaciente), SEEK_SET);
+//			fwrite(&p, sizeof(SPaciente),1,arq);
+//		}		
+//	}
+//	}
+//	fclose(arq);
+//	fclose(arq_aux);
+//}
