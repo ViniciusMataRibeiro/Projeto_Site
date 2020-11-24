@@ -7,22 +7,6 @@
 
 typedef char string[TAM];
 
-typedef struct{
-	string cod;
-	string nome;
-	string convenio;
-	string telefone;
-	string celular;	
-}Elemento;
-
-struct SPaciente{
-	string cod;
-	string nome;
-	string convenio;
-	string telefone;
-	string celular;
-};
-
 struct SData{
 	int dia, mes, ano;
 };
@@ -39,6 +23,19 @@ struct SConsulta{
 };
 
 typedef struct{
+	string nome;
+	string cod;
+}Elemento;
+
+struct SPaciente{
+	string cod;
+	string nome;
+	string convenio;
+	string telefone;
+	string celular;
+};
+
+typedef struct{
 	SPaciente vetor[TAM];
 	int fim;
 }Lista;
@@ -50,18 +47,13 @@ void IniciaLista(Lista *l){
 void InserirItem(Lista *l, Elemento e){
 	if(l->fim<TAM){
 		int i = l->fim;
-		while(i>0 and strcmp(e.nome, l->vetor[i-1].nome) < 0){
+		while(i > 0 and strcmp(e.nome, l->vetor[i-1].nome) < 0){
 			strcpy(l->vetor[i].nome, l->vetor[i-1].nome);
 			strcpy(l->vetor[i].cod, l->vetor[i-1].cod);
-			strcpy(l->vetor[i].telefone, l->vetor[i-1].telefone);
-			strcpy(l->vetor[i].celular, l->vetor[i-1].celular);
-			strcpy(l->vetor[i].convenio, l->vetor[i-1].convenio);
 			i--;
 		}
-		strcpy(l->vetor[i].celular, e.celular);
+		strcpy(l->vetor[i].nome, e.nome);		
 		strcpy(l->vetor[i].cod, e.cod);
-		strcpy(l->vetor[i].convenio, e.convenio);
-		strcpy(l->vetor[i].telefone, e.telefone);		
 		l->fim++;
 	}	
 }
@@ -215,8 +207,8 @@ void GerarTxt(FILE *dad, FILE *con){// funcao que gera o arquivo txt
 	Lista lst;
 	IniciaLista(&lst);
 	FILE *arquivo_txt;
-	int i, tam_arq;
-	char nome_arq[20];
+	int i, tam_arq, j;
+	char nome_arq[20], nome_pac[TAM], cod_pac[TAM];
 	Elemento e;
 	SPaciente p;
 	SConsulta c;
@@ -229,39 +221,42 @@ void GerarTxt(FILE *dad, FILE *con){// funcao que gera o arquivo txt
 		printf("Falha ao criar o arquivo.\n");
 		exit(1);
 	}
-	for(i=0;i<tam_arq;i++){ // ordenacao
-		fseek(dad, i * sizeof(SPaciente), SEEK_SET);
-		fread(&p,sizeof(SPaciente),1,dad);
-		strcpy(e.nome, p.nome);
-		strcpy(e.celular, p.celular);
-		strcpy(e.cod, p.cod);
-		strcpy(e.convenio, p.convenio);
-		strcpy(e.telefone, p.telefone);
-		InserirItem(&lst, e);				
-	}
-//	for(i=0;i<tam_arq;i++){
-//		printf("%s\n%s\n%s\n%s\n%s\n",lst.vetor[i].nome,lst.vetor[i].cod,lst.vetor[i].telefone,lst.vetor[i].celular,lst.vetor[i].convenio);
-//	}
 	for(i=0;i<tam_arq;i++){
 		fseek(dad, i * sizeof(SPaciente), SEEK_SET);
-		fread(&p, sizeof(SPaciente), 1, dad);
-		fprintf(arquivo_txt,"Paciente: %s\n",p.nome);
-		fprintf(arquivo_txt,"-------------------------------------\n");
-		fseek(con, i*sizeof(SConsulta), SEEK_SET);
-		fread(&c, sizeof(SConsulta), 1, con);
-		if(strcmp(p.cod, c.codigo) == 0){
-			fprintf(arquivo_txt,"Data da consulta: %d/%d/%d\n",c.data_consulta.dia,c.data_consulta.mes, c.data_consulta.ano);
-			fprintf(arquivo_txt,"Hora da consulta: %d:%d\n",c.hora_consulta.hora, c.hora_consulta.minutos);
-			fprintf(arquivo_txt,"Tipo da consulta: %s\n",c.tipo_consulta);
-		}else{
-			fprintf(arquivo_txt,"O paciente nao tem consulta marcada.\n");
-		}
-		fprintf(arquivo_txt,"-------------------------------------\n\n");								
+		fread(&p,sizeof(SPaciente),1,dad);
+		fseek(dad, i * sizeof(SPaciente), SEEK_SET);
+		fread(&c,sizeof(SPaciente),1,con);
+		strcpy(e.nome, p.nome);
+		InserirItem(&lst, e);
+	}
+	for(i=0;i<tam_arq;i++){		
+		strcpy(nome_pac, lst.vetor[i].nome);
+		fprintf(arquivo_txt,"Paciente: %s\n",nome_pac);
+		fprintf(arquivo_txt,"-------------------------------------\n\n");
 	}
 	fclose(arquivo_txt);
 	printf("\nArquivo gerado!\n\n");
 	system("pause");	
 }
+		
+//		fseek(dad,pos * sizeof(SPaciente), SEEK_SET);
+//		fread(&p, sizeof(SPaciente), 1, dad);
+//		if(strcmp(nome_pac, p.nome) == 0){				
+//			fprintf(arquivo_txt,"Paciente: %s\n",nome_pac);
+//			fprintf(arquivo_txt,"-------------------------------------\n");
+//			while(strcmp(p.cod, e.cod) != 0){										
+//				fseek(con, p2*sizeof(SConsulta), SEEK_SET);
+//				fread(&c, sizeof(SConsulta), 1, con);
+//				p2++;
+//				if(strcmp(p.cod, e.cod) == 0){										
+//					fprintf(arquivo_txt,"Data da consulta: %d/%d/%d\n",c.data_consulta.dia,c.data_consulta.mes, c.data_consulta.ano);
+//					fprintf(arquivo_txt,"Hora da consulta: %d:%d\n",c.hora_consulta.hora, c.hora_consulta.minutos);
+//					fprintf(arquivo_txt,"Tipo da consulta: %s\n",c.tipo_consulta);
+//				}else{
+//					fprintf(arquivo_txt,"O paciente nao tem consulta marcada.\n");
+//				}
+//				fprintf(arquivo_txt,"-------------------------------------\n\n");																
+
 
 //void AlteracaoPaciente(FILE *arq){  // funcao de alteracao dos pacientes
 //	FILE *arq_aux = fopen("aux.dat","ab+");
